@@ -6,17 +6,17 @@
   <title>Ropa Store</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
- <style>
-  .hero { background: #f8f9fa; padding: 60px 0; }
-  .contato-box { background: #fff; padding: 30px; border-radius: 6px; border: 1px solid #ddd; }
-  footer { background: #111; color: #ccc; padding: 30px 0; text-align: center; }
-  footer a { color: #ccc; margin: 0 10px; font-size: 1.3rem; }
-  footer a:hover { color: #fff; }
+  <style>
+    .hero { background: #f8f9fa; padding: 60px 0; }
+    .contato-box { background: #fff; padding: 30px; border-radius: 6px; border: 1px solid #ddd; }
+    footer { background: #111; color: #ccc; padding: 30px 0; text-align: center; }
+    footer a { color: #ccc; margin: 0 10px; font-size: 1.3rem; }
+    footer a:hover { color: #fff; }
 
-  section[id] {
-    scroll-margin-top: 70px; /* Ajuste conforme a altura do navbar */
-  }
-</style>
+    section[id] {
+      scroll-margin-top: 70px; /* Ajuste conforme a altura do navbar */
+    }
+  </style>
 </head>
 <body>
 
@@ -43,7 +43,6 @@
   <div class="container">
     <h1 class="mb-3">Moda para todos os estilos</h1>
     <p class="text-muted">Conforto e atitude em cada peça</p>
-    <!-- Imagem real no banner -->
     <img src="https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=1000&q=80" class="img-fluid rounded mt-4" alt="Banner de moda" />
   </div>
 </section>
@@ -53,7 +52,6 @@
   <div class="container">
     <div class="row align-items-center g-4">
       <div class="col-md-6">
-        <!-- Imagem real para "Sobre" -->
         <img src="https://images.unsplash.com/photo-1521334884684-d80222895322?auto=format&fit=crop&w=600&q=80" class="img-fluid rounded" alt="Loja Ropa" />
       </div>
       <div class="col-md-6">
@@ -68,37 +66,8 @@
 <section id="produtos" class="py-5 bg-light">
   <div class="container">
     <h2 class="text-center mb-4">Catálogo</h2>
-    <div class="row g-4">
-      <div class="col-md-4">
-        <div class="card h-100">
-          <img src="https://source.unsplash.com/400x300/?tshirt" class="card-img-top" alt="Camiseta" />
-          <div class="card-body">
-            <h5 class="card-title">Camiseta Básica</h5>
-            <p class="card-text">Conforto para o dia a dia.</p>
-            <a href="#" class="btn btn-sm btn-dark">Ver mais</a>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card h-100">
-          <img src="https://source.unsplash.com/400x300/?jacket" class="card-img-top" alt="Jaqueta" />
-          <div class="card-body">
-            <h5 class="card-title">Jaqueta Casual</h5>
-            <p class="card-text">Estilo urbano e proteção leve.</p>
-            <a href="#" class="btn btn-sm btn-dark">Ver mais</a>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card h-100">
-          <img src="https://source.unsplash.com/400x300/?pants" class="card-img-top" alt="Calça" />
-          <div class="card-body">
-            <h5 class="card-title">Calça Cargo</h5>
-            <p class="card-text">Visual descolado e funcional.</p>
-            <a href="#" class="btn btn-sm btn-dark">Ver mais</a>
-          </div>
-        </div>
-      </div>
+    <div class="row g-4" id="product-container">
+      <!-- Produtos da API serão inseridos aqui -->
     </div>
   </div>
 </section>
@@ -143,6 +112,48 @@
   </div>
 </footer>
 
+<!-- Scripts Bootstrap + API -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Script para carregar produtos da Fake Store API -->
+<script>
+  const url = "https://fakestoreapi.com/products";
+
+  fetch(url)
+    .then(response => response.json())
+    .then(produtos => {
+      const container = document.getElementById("product-container");
+
+      for (let i = 0; i < 10; i++) {
+        const produto = produtos[i];
+
+        const card = `
+          <div class="col-md-4">
+            <div class="card h-100">
+              <img src="${produto.image}" class="card-img-top p-3" alt="${produto.title}" style="height: 300px; object-fit: contain;">
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title">${produto.title}</h5>
+                <p class="card-text text-muted mb-1">${produto.category}</p>
+                <p class="card-text fw-bold mb-2">R$ ${produto.price.toFixed(2)}</p>
+                <p class="card-text small text-warning">★ ${produto.rating.rate} (${produto.rating.count})</p>
+                <a href="#" class="btn btn-sm btn-dark mt-auto">Ver mais</a>
+              </div>
+            </div>
+          </div>
+        `;
+
+        container.innerHTML += card;
+      }
+    })
+    .catch(erro => {
+      console.error("Erro ao buscar os produtos:", erro);
+      document.getElementById("product-container").innerHTML = `
+        <div class="col-12 text-center text-danger">
+          <p>Não foi possível carregar os produtos. Tente novamente mais tarde.</p>
+        </div>
+      `;
+    });
+</script>
+
 </body>
 </html>
